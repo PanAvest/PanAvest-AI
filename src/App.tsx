@@ -369,6 +369,8 @@ function useTTS() {
 // 3. AI GENERATOR (PanAvest AI)
 function useAI() {
   const [status] = useState<'loading' | 'ready' | 'error'>('ready')
+  const transformersRef = useRef<any>(null)
+  const transformersReadyRef = useRef<Promise<any> | null>(null)
 
   const formatToHtml = (raw: string, anchor: Entry) => {
     let text = raw.trim()
@@ -384,14 +386,14 @@ function useAI() {
     return text
   }
 
-  const geminiGenerate = async (anchor: Entry, isRegen?: boolean) => {
+  const openRouterGenerate = async (anchor: Entry, isRegen?: boolean) => {
     const instruction = isRegen
       ? 'Re-explain this concept simply for a beginner. Use a fresh analogy.'
       : 'Explain this concept simply to a professional. Provide a clear definition and a real-world supply chain example.'
 
     const prompt = `You are a Supply Chain Tutor.\nTerm: "${anchor.term}"\nDefinition: "${anchor.definition}"\nTags: "${anchor.tags || ''}"\n\nTask: ${instruction}\n\nOutput Format:\nReturn strictly HTML with <b> tags. No markdown.\n1. <b>Concept:</b> (Explanation)\n2. <b>Real-World Example:</b> (Example)`
 
-    const response = await fetch('/api/gemini', {
+    const response = await fetch('/api/ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt }),
@@ -399,7 +401,7 @@ function useAI() {
 
     if (!response.ok) {
       const errText = await response.text()
-      throw new Error(errText || 'PanAvest AI error')
+      throw new Error(JSON.stringify({ status: response.status, body: errText || 'PanAvest AI error' }))
     }
 
     const data = await response.json()
@@ -408,11 +410,80 @@ function useAI() {
     return text
   }
 
+  const isQuotaError = (message: string) => {
+    const text = message.toLowerCase()
+    return (
+      text.includes('"status":402') ||
+      text.includes('"status":429') ||
+      text.includes('insufficient_quota') ||
+      text.includes('quota') ||
+      text.includes('rate limit') ||
+      text.includes('payment required')
+    )
+  }
+
+  const loadTransformers = () => {
+    if (transformersRef.current) return Promise.resolve(transformersRef.current)
+    if (transformersReadyRef.current) return transformersReadyRef.current
+
+    transformersReadyRef.current = new Promise((resolve, reject) => {
+      const existing = (window as any).transformers
+      if (existing) {
+        transformersRef.current = existing
+        resolve(existing)
+        return
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.2/dist/transformers.min.js'
+      script.async = true
+      script.onload = () => {
+        const lib = (window as any).transformers
+        if (!lib) {
+          reject(new Error('Transformers.js failed to load'))
+          return
+        }
+        transformersRef.current = lib
+        resolve(lib)
+      }
+      script.onerror = () => reject(new Error('Transformers.js failed to load'))
+      document.head.appendChild(script)
+    })
+
+    return transformersReadyRef.current
+  }
+
+  const transformersGenerate = async (anchor: Entry, isRegen?: boolean) => {
+    const instruction = isRegen
+      ? 'Explain simply for a beginner with a fresh analogy.'
+      : 'Explain simply to a professional with a clear definition and a real-world supply chain example.'
+    const prompt = `Explain the supply chain term: ${anchor.term}. ${instruction} Definition: ${anchor.definition}. Tags: ${anchor.tags || ''}.`
+
+    const lib = await loadTransformers()
+    if (!lib?.pipeline) throw new Error('Transformers.js unavailable')
+
+    const generator = await lib.pipeline('text2text-generation', 'Xenova/flan-t5-small')
+    const out = await generator(prompt, { max_new_tokens: 160 })
+    const text = out?.[0]?.generated_text || ''
+    if (!text) throw new Error('Transformers.js returned empty response')
+    return text
+  }
+
   const generate = async (anchor: Entry, isRegen?: boolean) => {
     try {
-      return await geminiGenerate(anchor, isRegen)
+      const text = await openRouterGenerate(anchor, isRegen)
+      return formatToHtml(text, anchor)
     } catch (e) {
       console.error('PanAvest AI error', e)
+
+      if (isQuotaError(String(e))) {
+        try {
+          const fallback = await transformersGenerate(anchor, isRegen)
+          return formatToHtml(fallback, anchor)
+        } catch (fallbackErr) {
+          console.error('Transformers.js fallback error', fallbackErr)
+        }
+      }
     }
 
     return `<i>Could not reach PanAvest AI services. Here is a summary:</i><br/><br/><b>Concept:</b> ${anchor.term} is a concept in ${anchor.tags || 'supply chain'} regarding ${anchor.definition}.<br/><br/><b>Real-World Example:</b> This often appears when companies manage sourcing, inventory, logistics, or supplier performance related to the term.`
@@ -703,7 +774,7 @@ export default function App() {
   const [suggestions, setSuggestions] = useState<Entry[]>([])
   const [selectedSug, setSelectedSug] = useState(-1)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [autoReadAi, setAutoReadAi] = useState(false)
+  const [autoReadAi, setAutoReadAi] = useState(true)
 
   const chatEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)

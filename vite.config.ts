@@ -3,14 +3,16 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiKey = env.GEMINI_API_KEY
-  const model = env.GEMINI_MODEL || 'gemini-1.0-pro'
+  const apiKey = env.OPENROUTER_API_KEY
+  const model = env.OPENROUTER_MODEL || 'meta-llama/llama-3-8b-instruct:free'
+  const siteUrl = env.OPENROUTER_SITE_URL || 'http://localhost:5173'
+  const title = env.OPENROUTER_APP_NAME || 'PanAvest AI'
 
   return {
     plugins: [react()],
     server: {
       configureServer(server) {
-        server.middlewares.use('/api/gemini', (req, res) => {
+        server.middlewares.use('/api/ai', (req, res) => {
           if (req.method !== 'POST') {
             res.statusCode = 405
             res.setHeader('Content-Type', 'application/json')
@@ -21,7 +23,7 @@ export default defineConfig(({ mode }) => {
           if (!apiKey) {
             res.statusCode = 500
             res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({ error: 'Missing GEMINI_API_KEY' }))
+            res.end(JSON.stringify({ error: 'Missing OPENROUTER_API_KEY' }))
             return
           }
 
@@ -42,16 +44,21 @@ export default defineConfig(({ mode }) => {
                 return
               }
 
-              const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-                {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                  }),
-                }
-              )
+              const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${apiKey}`,
+                  'HTTP-Referer': siteUrl,
+                  'X-Title': title,
+                },
+                body: JSON.stringify({
+                  model,
+                  messages: [{ role: 'user', content: prompt }],
+                  temperature: 0.3,
+                  max_tokens: 260,
+                }),
+              })
 
               if (!response.ok) {
                 const errText = await response.text()
@@ -62,7 +69,7 @@ export default defineConfig(({ mode }) => {
               }
 
               const data = await response.json()
-              const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+              const text = data?.choices?.[0]?.message?.content
 
               res.statusCode = 200
               res.setHeader('Content-Type', 'application/json')
