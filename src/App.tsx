@@ -15,15 +15,18 @@ const STYLES = `
   --bot-bubble: transparent;
   --card-bg: #ffffff;
   --shadow: 0 4px 12px rgba(0,0,0,0.08);
+  --input-offset: 150px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Base */
-body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text-main); height: 100vh; overflow: hidden; -webkit-text-size-adjust: 100%; }
-#root { height: 100%; display: flex; flex-direction: column; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text-main); height: 100dvh; overflow: hidden; -webkit-text-size-adjust: 100%; }
+#root { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
 
 /* Layout */
 .app-container { display: flex; flex-direction: column; height: 100%; max-width: 100%; position: relative; }
-.chat-window { flex: 1; overflow-y: auto; padding: 20px 0 140px; scroll-behavior: smooth; display: flex; flex-direction: column; align-items: center; }
+.chat-window { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 0 calc(var(--input-offset) + var(--safe-bottom)); scroll-behavior: smooth; display: flex; flex-direction: column; align-items: center; scroll-padding-bottom: calc(var(--input-offset) + var(--safe-bottom)); }
 .width-constraint { width: 100%; max-width: 850px; padding: 0 20px; box-sizing: border-box; }
 
 /* Header */
@@ -34,11 +37,13 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 
 .header-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 
-.settings-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; background: var(--surface); }
+.settings-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: background 0.2s, transform 0.2s ease; background: var(--surface); }
 .settings-btn:hover { background: var(--surface-hover); }
+.settings-btn:active { transform: scale(0.98); }
 
-.db-status { font-size: 12px; display: flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--surface); border-radius: 99px; font-weight: 500; cursor: pointer; transition: background 0.2s; border: 1px solid var(--border); }
+.db-status { font-size: 12px; display: flex; align-items: center; gap: 6px; padding: 4px 12px; background: var(--surface); border-radius: 99px; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.2s ease; border: 1px solid var(--border); }
 .db-status:hover { background: var(--surface-hover); }
+.db-status:active { transform: scale(0.98); }
 .indicator { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
 .indicator.ready { background: #14ae5c; box-shadow: 0 0 0 2px rgba(20, 174, 92, 0.2); }
 .indicator.error { background: #d93025; }
@@ -58,7 +63,7 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .api-hint { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.4; }
 
 /* Messages */
-.message-row { display: flex; width: 100%; margin-bottom: 32px; animation: slide-up 0.3s ease-out; }
+.message-row { display: flex; width: 100%; margin-bottom: 32px; animation: slide-up 0.35s ease-out; }
 .message-row.user { justify-content: flex-end; }
 .message-row.bot { justify-content: flex-start; }
 
@@ -74,8 +79,9 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .smart-card {
   background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px;
   padding: 20px; box-shadow: var(--shadow); margin-top: 8px; max-width: 680px;
-  transition: all 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
 }
+.smart-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.12); border-color: rgba(182, 84, 55, 0.15); }
 .term-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
 .term-title { margin: 0; font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; }
 .term-pos { font-size: 12px; font-weight: 600; color: var(--primary); background: var(--primary-bg); padding: 2px 8px; border-radius: 99px; text-transform: uppercase; }
@@ -87,9 +93,10 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .action-btn {
   display: flex; align-items: center; gap: 8px; padding: 8px 14px;
   background: var(--surface); border: 1px solid transparent; border-radius: 8px;
-  font-size: 13px; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+  font-size: 13px; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: transform 0.2s ease, background 0.2s, border-color 0.2s, color 0.2s;
 }
 .action-btn:hover { background: var(--surface-hover); border-color: var(--border); color: var(--text-main); }
+.action-btn:active { transform: translateY(1px); }
 .action-btn.active { background: var(--primary-bg); color: var(--primary); border-color: rgba(182,84,55,0.2); }
 .action-icon { width: 16px; height: 16px; opacity: 0.8; }
 
@@ -136,7 +143,7 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .fade-text { animation: fade-in-out 2s infinite; }
 
 /* Input Area */
-.input-area { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, var(--bg) 85%, transparent); padding: 0 20px 30px; display: flex; flex-direction: column; align-items: center; z-index: 20; pointer-events: none; }
+.input-area { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, var(--bg) 85%, transparent); padding: 0 20px calc(30px + var(--safe-bottom)); display: flex; flex-direction: column; align-items: center; z-index: 20; pointer-events: none; }
 .input-container { width: 100%; max-width: 850px; position: relative; pointer-events: auto; }
 
 /* Predictive Suggestions */
@@ -153,11 +160,12 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .p-def { font-size: 12px; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
 
 /* Input Bar */
-.input-wrapper { background: var(--surface); border-radius: 28px; display: flex; align-items: center; border: 1px solid transparent; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.input-wrapper { background: var(--surface); border-radius: 28px; display: flex; align-items: center; border: 1px solid transparent; transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
 .input-wrapper:focus-within { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border); }
 .chat-input { flex: 1; background: transparent; border: none; padding: 16px 24px; font-size: 16px; outline: none; color: var(--text-main); font-family: inherit; }
-.send-btn { background: transparent; border: none; cursor: pointer; padding: 12px; margin-right: 6px; color: var(--text-sub); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.send-btn { background: transparent; border: none; cursor: pointer; padding: 12px; margin-right: 6px; color: var(--text-sub); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.2s ease, background 0.2s, color 0.2s; }
 .send-btn.active { color: #fff; background: var(--primary); }
+.send-btn:active { transform: scale(0.96); }
 
 /* Welcome */
 .welcome-screen { text-align: center; padding-top: 60px; opacity: 0; animation: fade-in 0.6s forwards; }
@@ -176,13 +184,14 @@ mark { background: rgba(182, 84, 55, 0.2); color: inherit; padding: 0 2px; borde
 
 /* Mobile */
 @media (max-width: 760px) {
+  :root { --input-offset: 130px; }
   body { overflow: hidden; }
   .header { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
   .brand { font-size: 16px; }
   .header-controls { width: 100%; justify-content: space-between; gap: 8px; }
   .settings-btn { font-size: 12px; padding: 6px 10px; }
   .db-status { font-size: 11px; padding: 4px 10px; }
-  .chat-window { padding: 12px 0 120px; }
+  .chat-window { padding: 12px 0 calc(var(--input-offset) + var(--safe-bottom)); }
   .width-constraint { padding: 0 12px; }
   .message-row { margin-bottom: 22px; }
   .avatar.bot { margin-right: 10px; width: 28px; height: 28px; font-size: 12px; }
@@ -192,12 +201,25 @@ mark { background: rgba(182, 84, 55, 0.2); color: inherit; padding: 0 2px; borde
   .action-bar { gap: 6px; }
   .action-btn { padding: 6px 10px; font-size: 12px; }
   .predictive-list { left: 12px; right: 12px; border-radius: 12px; }
-  .input-area { padding: 0 12px 18px; }
+  .input-area { padding: 0 12px calc(18px + var(--safe-bottom)); }
   .input-wrapper { border-radius: 22px; }
   .chat-input { padding: 14px 16px; font-size: 16px; }
   .send-btn { padding: 10px; margin-right: 4px; }
   .w-title { font-size: 28px; }
   .w-sub { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+  :root { --input-offset: 120px; }
+  .header-controls { flex-direction: column; align-items: stretch; }
+  .db-status, .settings-btn { width: 100%; justify-content: center; }
+  .action-btn { flex: 1 1 auto; }
+  .term-header { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .smart-card:hover { transform: none; }
 }
 
 @media (max-width: 420px) {
@@ -375,7 +397,10 @@ function useAI() {
   const formatToHtml = (raw: string, anchor: Entry) => {
     let text = raw.trim()
     if (!text) return fallbackExplanation(anchor)
-    text = escapeHtml(text).replace(/\r?\n+/g, '\n')
+    const hasHtml = /<\/?[a-z][\s\S]*>/i.test(text)
+    if (!hasHtml) {
+      text = escapeHtml(text).replace(/\r?\n+/g, '\n')
+    }
     text = text.replace(/Concept:/i, '<b>Concept:</b>').replace(/Real-World Example:/i, '<b>Real-World Example:</b>')
     if (!text.includes('<b>Concept:</b>')) text = `<b>Concept:</b> ${text}`
     if (!text.includes('<b>Real-World Example:</b>')) {
@@ -386,7 +411,7 @@ function useAI() {
     return text
   }
 
-  const openRouterGenerate = async (anchor: Entry, isRegen?: boolean) => {
+  const pollinationsGenerate = async (anchor: Entry, isRegen?: boolean) => {
     const instruction = isRegen
       ? 'Re-explain this concept simply for a beginner. Use a fresh analogy.'
       : 'Explain this concept simply to a professional. Provide a clear definition and a real-world supply chain example.'
@@ -410,15 +435,21 @@ function useAI() {
     return text
   }
 
-  const isQuotaError = (message: string) => {
+  const shouldFallback = (message: string) => {
     const text = message.toLowerCase()
     return (
       text.includes('"status":402') ||
+      text.includes('"status":404') ||
       text.includes('"status":429') ||
       text.includes('insufficient_quota') ||
       text.includes('quota') ||
       text.includes('rate limit') ||
-      text.includes('payment required')
+      text.includes('payment required') ||
+      text.includes('important notice') ||
+      text.includes('legacy text api') ||
+      text.includes('being deprecated') ||
+      text.includes('migrate to our new service') ||
+      text.includes('enter.pollinations.ai')
     )
   }
 
@@ -426,29 +457,19 @@ function useAI() {
     if (transformersRef.current) return Promise.resolve(transformersRef.current)
     if (transformersReadyRef.current) return transformersReadyRef.current
 
-    transformersReadyRef.current = new Promise((resolve, reject) => {
-      const existing = (window as any).transformers
-      if (existing) {
-        transformersRef.current = existing
-        resolve(existing)
-        return
-      }
-
-      const script = document.createElement('script')
-      script.src = 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.2/dist/transformers.min.js'
-      script.async = true
-      script.onload = () => {
-        const lib = (window as any).transformers
-        if (!lib) {
-          reject(new Error('Transformers.js failed to load'))
-          return
-        }
+    transformersReadyRef.current = import(
+      'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.2/dist/transformers.min.js'
+    )
+      .then((mod: any) => {
+        const lib = mod?.pipeline ? mod : mod?.default
+        if (!lib?.pipeline) throw new Error('Transformers.js failed to load')
         transformersRef.current = lib
-        resolve(lib)
-      }
-      script.onerror = () => reject(new Error('Transformers.js failed to load'))
-      document.head.appendChild(script)
-    })
+        return lib
+      })
+      .catch((err) => {
+        transformersReadyRef.current = null
+        throw err
+      })
 
     return transformersReadyRef.current
   }
@@ -471,12 +492,12 @@ function useAI() {
 
   const generate = async (anchor: Entry, isRegen?: boolean) => {
     try {
-      const text = await openRouterGenerate(anchor, isRegen)
+      const text = await pollinationsGenerate(anchor, isRegen)
       return formatToHtml(text, anchor)
     } catch (e) {
       console.error('PanAvest AI error', e)
 
-      if (isQuotaError(String(e))) {
+      if (shouldFallback(String(e))) {
         try {
           const fallback = await transformersGenerate(anchor, isRegen)
           return formatToHtml(fallback, anchor)
