@@ -108,10 +108,32 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .detail-val { color: var(--text-main); flex: 1; }
 
 .ai-box { background: #fff; border: 1px solid #c3eec9; padding: 12px; border-radius: 8px; margin-top: 12px; position: relative; }
-.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .ai-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #14ae5c; text-transform: uppercase; }
 .mini-read-btn { background: none; border: none; color: #14ae5c; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 4px; }
 .mini-read-btn:hover { background: #f0fdf4; }
+.context-img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-top: 12px; border: 1px solid var(--border); background: #f0f0f0; }
+
+.regen-btn {
+  width: 100%; margin-top: 12px; padding: 8px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; color: #1a73e8; font-size: 12px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;
+}
+.regen-btn:hover { background: var(--surface-hover); color: var(--text-main); }
+
+.google-link-btn {
+  width: 100%; margin-top: 8px; padding: 8px; background: #e8f0fe; border: 1px solid #d2e3fc;
+  border-radius: 8px; color: #1a73e8; font-size: 12px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+}
+.google-link-btn:hover { background: #d2e3fc; }
+
+/* Thinking Animation */
+.thinking-box { margin-top: 12px; padding: 16px; background: #f8fafc; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border); }
+.thinking-header { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--primary); }
+.pulse-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse-opacity 1s infinite ease-in-out; }
+.thought-process { font-size: 12px; color: #64748b; font-family: monospace; height: 1.4em; overflow: hidden; white-space: nowrap; }
+.fade-text { animation: fade-in-out 2s infinite; }
 
 /* Input Area */
 .input-area { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, var(--bg) 85%, transparent); padding: 0 20px 30px; display: flex; flex-direction: column; align-items: center; z-index: 20; pointer-events: none; }
@@ -142,6 +164,16 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .w-title { font-size: 36px; font-weight: 600; margin-bottom: 10px; color: var(--text-main); }
 .w-sub { color: var(--text-sub); margin-bottom: 30px; font-size: 16px; }
 
+/* Utilities */
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pop-up { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes slide-down { from { opacity: 0; height: 0; } to { opacity: 1; height: auto; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bounce-bar { 0%, 100% { height: 4px; } 50% { height: 100%; } }
+@keyframes pulse-opacity { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes fade-in-out { 0% { opacity: 0; transform: translateY(2px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateY(-2px); } }
+mark { background: rgba(182, 84, 55, 0.2); color: inherit; padding: 0 2px; border-radius: 2px; }
+
 /* Mobile */
 @media (max-width: 760px) {
   body { overflow: hidden; }
@@ -162,7 +194,7 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
   .predictive-list { left: 12px; right: 12px; border-radius: 12px; }
   .input-area { padding: 0 12px 18px; }
   .input-wrapper { border-radius: 22px; }
-  .chat-input { padding: 14px 16px; font-size: 15px; }
+  .chat-input { padding: 14px 16px; font-size: 16px; }
   .send-btn { padding: 10px; margin-right: 4px; }
   .w-title { font-size: 28px; }
   .w-sub { font-size: 14px; }
@@ -175,14 +207,6 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
   .term-title { font-size: 18px; }
   .details-panel { padding: 12px; }
 }
-
-/* Utilities */
-@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pop-up { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-@keyframes slide-down { from { opacity: 0; height: 0; } to { opacity: 1; height: auto; } }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes bounce-bar { 0%, 100% { height: 4px; } 50% { height: 100%; } }
-mark { background: rgba(182, 84, 55, 0.2); color: inherit; padding: 0 2px; border-radius: 2px; }
 `
 
 /* ------------------------------- TYPES & UTILS ------------------------------- */
@@ -209,6 +233,17 @@ type Message = {
 }
 
 const uuid = () => Math.random().toString(36).substring(2, 9)
+const escapeHtml = (input: string) =>
+  input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+
+const fallbackExplanation = (anchor: Entry) => {
+  const concept = escapeHtml(anchor.definition || `${anchor.term} is a supply chain concept.`)
+  const exampleText =
+    anchor.examples ||
+    `In practice, ${anchor.term} could involve ${anchor.definition?.replace(/\.$/, '') || 'real-world operations'}.`
+  const example = escapeHtml(exampleText)
+  return `<b>Concept:</b> ${concept}<br/><br/><b>Real-World Example:</b> ${example}`
+}
 
 /* ------------------------------- LOGIC HOOKS ------------------------------- */
 
@@ -284,7 +319,7 @@ function useData() {
   return { data, status, processCSV, fuseRef }
 }
 
-// 2. TTS HOOK (Enhanced for Custom Voice Selection)
+// 2. TTS HOOK
 function useTTS() {
   const [speakingId, setSpeakingId] = useState<string | null>(null)
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>('')
@@ -303,7 +338,6 @@ function useTTS() {
         if (best) setSelectedVoiceURI(best.voiceURI)
       }
     }
-
     load()
     if (speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = load
@@ -332,58 +366,59 @@ function useTTS() {
   return { speak, speakingId, voices, selectedVoiceURI, setSelectedVoiceURI }
 }
 
-// 3. AI EXPLANATION GENERATOR (Heuristic + Real Gemini)
-async function synthesizeExplanation(anchor: Entry, allData: Entry[], apiKey?: string) {
-  if (apiKey) {
-    try {
-      const prompt = `Explain the supply chain term "${anchor.term}" concisely (max 80 words). Provide a definition and one real-world example. Context tags: ${anchor.tags || 'General'}. Return HTML format with bold tags <b>.`
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-        }
-      )
-      const data = await response.json()
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-      if (text) return text
-    } catch (e) {
-      console.error('Gemini API Error', e)
-      return (
-        '<i>Error connecting to Gemini API. Falling back to internal knowledge base.</i><br/><br/>' +
-        heuristicExplanation(anchor, allData)
-      )
+// 3. AI GENERATOR (PanAvest AI)
+function useAI() {
+  const [status] = useState<'loading' | 'ready' | 'error'>('ready')
+
+  const formatToHtml = (raw: string, anchor: Entry) => {
+    let text = raw.trim()
+    if (!text) return fallbackExplanation(anchor)
+    text = escapeHtml(text).replace(/\r?\n+/g, '\n')
+    text = text.replace(/Concept:/i, '<b>Concept:</b>').replace(/Real-World Example:/i, '<b>Real-World Example:</b>')
+    if (!text.includes('<b>Concept:</b>')) text = `<b>Concept:</b> ${text}`
+    if (!text.includes('<b>Real-World Example:</b>')) {
+      text += `<br/><br/><b>Real-World Example:</b> ${escapeHtml(anchor.examples || 'A practical example can be observed in day-to-day supply chain operations.')}`
+    } else {
+      text = text.replace(/\n/g, '<br/>')
     }
+    return text
   }
 
-  return heuristicExplanation(anchor, allData)
-}
+  const geminiGenerate = async (anchor: Entry, isRegen?: boolean) => {
+    const instruction = isRegen
+      ? 'Re-explain this concept simply for a beginner. Use a fresh analogy.'
+      : 'Explain this concept simply to a professional. Provide a clear definition and a real-world supply chain example.'
 
-function heuristicExplanation(anchor: Entry, allData: Entry[]) {
-  const tags = (anchor.tags || '').toLowerCase().split(/,\s*/).filter(Boolean)
-  const def = anchor.definition.toLowerCase()
-  const related = allData
-    .filter((d) => d.term !== anchor.term)
-    .map((d) => {
-      let score = 0
-      const dTags = (d.tags || '').toLowerCase().split(/,\s*/)
-      if (tags.some((t) => dTags.includes(t))) score += 2
-      if (def.includes(d.term.toLowerCase())) score += 5
-      return { ...d, score }
+    const prompt = `You are a Supply Chain Tutor.\nTerm: "${anchor.term}"\nDefinition: "${anchor.definition}"\nTags: "${anchor.tags || ''}"\n\nTask: ${instruction}\n\nOutput Format:\nReturn strictly HTML with <b> tags. No markdown.\n1. <b>Concept:</b> (Explanation)\n2. <b>Real-World Example:</b> (Example)`
+
+    const response = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
     })
-    .filter((d) => d.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
 
-  const intro = `Here is a deeper look at **${anchor.term}**.`
-  const context = tags.length ? `It is primarily used in the context of: ${tags.join(', ')}.` : ''
-  const relText = related.length
-    ? `\n\n**Related Concepts:**\n${related
-        .map((r) => `• ${r.term}: ${r.definition.slice(0, 80)}...`)
-        .join('\n')}`
-    : ''
-  return `${intro} ${context} ${relText}`
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error(errText || 'PanAvest AI error')
+    }
+
+    const data = await response.json()
+    const text = data?.text || ''
+    if (!text) throw new Error('PanAvest AI returned empty response')
+    return text
+  }
+
+  const generate = async (anchor: Entry, isRegen?: boolean) => {
+    try {
+      return await geminiGenerate(anchor, isRegen)
+    } catch (e) {
+      console.error('PanAvest AI error', e)
+    }
+
+    return `<i>Could not reach PanAvest AI services. Here is a summary:</i><br/><br/><b>Concept:</b> ${anchor.term} is a concept in ${anchor.tags || 'supply chain'} regarding ${anchor.definition}.<br/><br/><b>Real-World Example:</b> This often appears when companies manage sourcing, inventory, logistics, or supplier performance related to the term.`
+  }
+
+  return { status, generate }
 }
 
 /* ------------------------------- UI COMPONENTS ------------------------------- */
@@ -391,53 +426,21 @@ function heuristicExplanation(anchor: Entry, allData: Entry[]) {
 const SettingsDialog = ({
   open,
   onClose,
-  apiKey,
-  setApiKey,
   tts,
+  autoReadAi,
+  setAutoReadAi,
 }: {
   open: boolean
   onClose: () => void
-  apiKey: string
-  setApiKey: (k: string) => void
   tts: any
+  autoReadAi: boolean
+  setAutoReadAi: (v: boolean) => void
 }) => {
-  const [apiDraft, setApiDraft] = useState('')
-
-  useEffect(() => {
-    if (open) setApiDraft('')
-  }, [open])
-
   if (!open) return null
-  const handleSave = () => {
-    const next = apiDraft.trim()
-    if (next) setApiKey(next)
-    setApiDraft('')
-    onClose()
-  }
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h2>Settings</h2>
-
-        <div className="modal-row">
-          <label className="modal-label">Gemini API Key (Optional)</label>
-          <input
-            className="modal-input"
-            placeholder={apiKey ? 'Key is set (hidden)' : 'Paste key to enable Real AI...'}
-            value={apiDraft}
-            onChange={(e) => setApiDraft(e.target.value)}
-            type="password"
-            autoComplete="off"
-          />
-          <div className="api-hint">
-            Get a free key from{' '}
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">
-              Google AI Studio
-            </a>
-            . Without a key, the app uses smart keyword matching.
-          </div>
-        </div>
-
         <div className="modal-row">
           <label className="modal-label">Voice Selection</label>
           <select
@@ -455,12 +458,47 @@ const SettingsDialog = ({
           </select>
           <div className="api-hint">Tip: "Google US English" or "Microsoft Natural" sound most human-like.</div>
         </div>
-
+        <div className="modal-row">
+          <label className="modal-label">Text-to-Speech</label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#333' }}>
+            <input type="checkbox" checked={autoReadAi} onChange={(e) => setAutoReadAi(e.target.checked)} />
+            Auto-read PanAvest AI insights
+          </label>
+        </div>
         <div className="modal-actions">
-          <button className="modal-btn primary" onClick={handleSave}>
+          <button className="modal-btn primary" onClick={onClose}>
             Done
           </button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+const ThinkingIndicator = () => {
+  const [thought, setThought] = useState('Initializing...')
+  const thoughts = useMemo(
+    () => ['Scanning database...', 'Connecting concepts...', 'Analyzing context...', 'Drafting insight...', 'Formatting response...'],
+    []
+  )
+
+  useEffect(() => {
+    let i = 0
+    const interval = setInterval(() => {
+      setThought(thoughts[i % thoughts.length])
+      i += 1
+    }, 1200)
+    return () => clearInterval(interval)
+  }, [thoughts])
+
+  return (
+    <div className="thinking-box">
+      <div className="thinking-header">
+        <div className="pulse-dot"></div>
+        PanAvest AI is Thinking...
+      </div>
+      <div className="thought-process">
+        <span className="fade-text">» {thought}</span>
       </div>
     </div>
   )
@@ -470,16 +508,32 @@ const SmartCard = ({
   entry,
   allData,
   tts,
-  apiKey,
+  ai,
+  autoReadAi,
 }: {
   entry: Entry
   allData: Entry[]
   tts: any
-  apiKey: string
+  ai: { status: 'loading' | 'ready' | 'error'; generate: (e: Entry, regen?: boolean) => Promise<string> }
+  autoReadAi: boolean
 }) => {
   const [expanded, setExpanded] = useState<'details' | 'ai' | null>(null)
   const [aiText, setAiText] = useState('')
   const [loadingAi, setLoadingAi] = useState(false)
+
+  const fetchAi = async (regen = false) => {
+    setLoadingAi(true)
+    try {
+      const txt = await ai.generate(entry, regen)
+      const next = txt || ''
+      setAiText(next)
+    } catch (e) {
+      console.error('PanAvest AI generate error', e)
+      setAiText(fallbackExplanation(entry))
+    } finally {
+      setLoadingAi(false)
+    }
+  }
 
   const handleAi = async () => {
     if (expanded === 'ai') {
@@ -487,12 +541,7 @@ const SmartCard = ({
       return
     }
     setExpanded('ai')
-    if (!aiText) {
-      setLoadingAi(true)
-      const txt = await synthesizeExplanation(entry, allData, apiKey)
-      setAiText(txt)
-      setLoadingAi(false)
-    }
+    if (!aiText) fetchAi()
   }
 
   const handleCopy = () => {
@@ -535,7 +584,7 @@ const SmartCard = ({
           <svg className="action-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2zm0-4H7V7h10v2z" />
           </svg>
-          {apiKey ? 'Explain (Gemini)' : 'Smart Context'}
+          {ai.status === 'loading' ? 'Loading PanAvest AI...' : 'Explain with PanAvest AI'}
         </button>
 
         <button
@@ -585,21 +634,57 @@ const SmartCard = ({
       {expanded === 'ai' && (
         <div className="details-panel ai-box">
           <div className="ai-header">
-            <div className="ai-badge">✨ {apiKey ? 'Gemini 1.5 Flash' : 'Smart Insight'}</div>
-            <button
-              className="mini-read-btn"
-              onClick={() => tts.speak(`ai-${entry.term}`, aiText.replace(/<[^>]*>/g, ''))}
-            >
-              {isSpeakingAi ? 'Stop Reading' : 'Read Insight'}
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-              </svg>
-            </button>
+            <div className="ai-badge">✨ PanAvest AI</div>
+            {aiText && !loadingAi && (
+              <button
+                className="mini-read-btn"
+                onClick={() => tts.speak(`ai-${entry.term}`, aiText.replace(/<[^>]*>/g, ''))}
+              >
+                {isSpeakingAi ? 'Stop Reading' : 'Read Insight'}
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+                </svg>
+              </button>
+            )}
           </div>
+
+          <img
+            src={`https://loremflickr.com/600/300/${encodeURIComponent(entry.tags?.split(',')[0] || entry.term || 'business')},logistics/all?lock=${entry.term.length}`}
+            className="context-img"
+            alt={entry.term}
+            onError={(e) => (e.currentTarget.style.display = 'none')}
+          />
+
           {loadingAi ? (
-            <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic' }}>Generating explanation...</div>
+            <ThinkingIndicator />
           ) : (
-            <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: aiText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+            <>
+              <div
+                style={{ whiteSpace: 'pre-wrap', marginTop: '12px' }}
+                dangerouslySetInnerHTML={{ __html: aiText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
+              />
+
+              <a
+                href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${entry.term} supply chain`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="google-link-btn"
+              >
+                View Google Images
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+
+              <button className="regen-btn" onClick={() => fetchAi(true)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+                </svg>
+                Try Different Explanation
+              </button>
+            </>
           )}
         </div>
       )}
@@ -612,28 +697,21 @@ const SmartCard = ({
 export default function App() {
   const { data, status, processCSV, fuseRef } = useData()
   const tts = useTTS()
+  const ai = useAI()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [suggestions, setSuggestions] = useState<Entry[]>([])
   const [selectedSug, setSelectedSug] = useState(-1)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [apiKey, setApiKey] = useState(() => {
-    if (typeof window === 'undefined') return import.meta.env.VITE_GEMINI_API_KEY || ''
-    return localStorage.getItem('gemini_key') || import.meta.env.VITE_GEMINI_API_KEY || ''
-  })
-  const stopWords = useMemo(
-    () => /^(what is|what's|define|explain|describe|meaning of|tell me about|search for|look up|do you know)\s+/i,
-    []
-  )
+  const [autoReadAi, setAutoReadAi] = useState(false)
 
   const chatEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('gemini_key', apiKey)
-    }
-  }, [apiKey])
+  const stopWords = useMemo(
+    () => /^(what is|what's|define|explain|describe|meaning of|tell me about|search for|look up|do you know)\s+/i,
+    []
+  )
 
   useEffect(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages])
 
@@ -670,45 +748,47 @@ export default function App() {
     setSuggestions([])
     setSelectedSug(-1)
 
-    setMessages((prev) => [
-      ...prev,
-      { id: uuid(), role: 'user', content: originalQuery, timestamp: Date.now() },
-    ])
+    setMessages((prev) => [...prev, { id: uuid(), role: 'user', content: originalQuery, timestamp: Date.now() }])
 
-    setTimeout(() => {
-      if (status !== 'ready') {
-        setMessages((p) => [...p, { id: uuid(), role: 'bot', content: 'Please load the database file first.' }])
-        return
-      }
+    if (status !== 'ready') {
+      setTimeout(
+        () => setMessages((p) => [...p, { id: uuid(), role: 'bot', content: 'Please load the database file first.' }]),
+        200
+      )
+      return
+    }
 
-      const cleanQuery = originalQuery.replace(stopWords, '').replace(/[?]/g, '').trim()
+    const cleanQuery = originalQuery.replace(stopWords, '').replace(/[?]/g, '').trim()
 
-      let match = data.find((d) => d.term.toLowerCase() === cleanQuery.toLowerCase())
+    let match = data.find((d) => d.term.toLowerCase() === cleanQuery.toLowerCase())
 
-      if (!match && fuseRef.current) {
-        const res = fuseRef.current.search(cleanQuery)
+    if (!match && fuseRef.current) {
+      const res = fuseRef.current.search(cleanQuery)
+      if (res.length > 0) match = res[0].item
+    }
+
+    if (!match && cleanQuery !== originalQuery && fuseRef.current) {
+      const exactOrig = data.find((d) => d.term.toLowerCase() === originalQuery.toLowerCase())
+      if (exactOrig) {
+        match = exactOrig
+      } else {
+        const res = fuseRef.current.search(originalQuery)
         if (res.length > 0) match = res[0].item
       }
+    }
 
-      if (!match && cleanQuery !== originalQuery && fuseRef.current) {
-        const exactOrig = data.find((d) => d.term.toLowerCase() === originalQuery.toLowerCase())
-        if (exactOrig) {
-          match = exactOrig
-        } else {
-          const res = fuseRef.current.search(originalQuery)
-          if (res.length > 0) match = res[0].item
-        }
-      }
-
-      if (match) {
-        setMessages((p) => [...p, { id: uuid(), role: 'bot', entry: match, timestamp: Date.now() }])
-      } else {
-        setMessages((p) => [
-          ...p,
-          { id: uuid(), role: 'bot', content: `I couldn't find a match for "${cleanQuery}". Try a different term.` },
-        ])
-      }
-    }, 500)
+    if (match) {
+      setMessages((p) => [...p, { id: uuid(), role: 'bot', entry: match, timestamp: Date.now() }])
+    } else {
+      setTimeout(
+        () =>
+          setMessages((p) => [
+            ...p,
+            { id: uuid(), role: 'bot', content: `I couldn't find a match for "${cleanQuery}". Try a different term.` },
+          ]),
+        300
+      )
+    }
   }
 
   const handleFile = (file: File) => {
@@ -732,14 +812,14 @@ export default function App() {
         <SettingsDialog
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
           tts={tts}
+          autoReadAi={autoReadAi}
+          setAutoReadAi={setAutoReadAi}
         />
 
         <div className={`header ${messages.length > 0 ? 'scrolled' : ''}`}>
           <div className="brand">
-            <span>EIS</span> Smart Search
+            <span>PanAvest</span> AI
           </div>
 
           <div className="header-controls">
@@ -748,7 +828,7 @@ export default function App() {
             </button>
 
             <div className="db-status" onClick={() => fileInputRef.current?.click()} title="Load CSV">
-              <div className={`indicator ${status === 'ready' ? 'ready' : 'error'}`} />
+              <div className={`indicator ${status === 'ready' ? 'ready' : 'error'}`}></div>
               {status === 'ready' ? 'Database Active' : 'Load Database'}
             </div>
           </div>
@@ -775,10 +855,10 @@ export default function App() {
             <div className="width-constraint">
               {messages.map((m) => (
                 <div key={m.id} className={`message-row ${m.role}`}>
-                  {m.role === 'bot' && <div className="avatar bot">AI</div>}
+                  {m.role === 'bot' && <div className="avatar bot">PA</div>}
                   <div className="bubble">
                     {m.content && <div style={{ padding: m.role === 'bot' ? '12px 0' : undefined }}>{m.content}</div>}
-                    {m.entry && <SmartCard entry={m.entry} allData={data} tts={tts} apiKey={apiKey} />}
+                    {m.entry && <SmartCard entry={m.entry} allData={data} tts={tts} ai={ai} autoReadAi={autoReadAi} />}
                   </div>
                 </div>
               ))}
@@ -815,7 +895,7 @@ export default function App() {
               />
               <button className={`send-btn ${input.trim() ? 'active' : ''}`} onClick={() => handleSubmit(input)}>
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
                 </svg>
               </button>
             </div>
