@@ -18,7 +18,7 @@ const STYLES = `
 }
 
 /* Base */
-body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text-main); height: 100vh; overflow: hidden; }
+body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text-main); height: 100vh; overflow: hidden; -webkit-text-size-adjust: 100%; }
 #root { height: 100%; display: flex; flex-direction: column; }
 
 /* Layout */
@@ -32,7 +32,7 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 18px; color: var(--text-sub); }
 .brand span { color: var(--primary); font-weight: 700; }
 
-.header-controls { display: flex; gap: 12px; align-items: center; }
+.header-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 
 .settings-btn { background: none; border: none; cursor: pointer; color: var(--text-sub); display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; background: var(--surface); }
 .settings-btn:hover { background: var(--surface-hover); }
@@ -141,6 +141,40 @@ body { margin: 0; font-family: "Google Sans", "Segoe UI", Roboto, Helvetica, Ari
 .welcome-screen { text-align: center; padding-top: 60px; opacity: 0; animation: fade-in 0.6s forwards; }
 .w-title { font-size: 36px; font-weight: 600; margin-bottom: 10px; color: var(--text-main); }
 .w-sub { color: var(--text-sub); margin-bottom: 30px; font-size: 16px; }
+
+/* Mobile */
+@media (max-width: 760px) {
+  body { overflow: hidden; }
+  .header { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
+  .brand { font-size: 16px; }
+  .header-controls { width: 100%; justify-content: space-between; gap: 8px; }
+  .settings-btn { font-size: 12px; padding: 6px 10px; }
+  .db-status { font-size: 11px; padding: 4px 10px; }
+  .chat-window { padding: 12px 0 120px; }
+  .width-constraint { padding: 0 12px; }
+  .message-row { margin-bottom: 22px; }
+  .avatar.bot { margin-right: 10px; width: 28px; height: 28px; font-size: 12px; }
+  .smart-card { padding: 16px; border-radius: 14px; }
+  .term-title { font-size: 20px; }
+  .term-def { font-size: 15px; }
+  .action-bar { gap: 6px; }
+  .action-btn { padding: 6px 10px; font-size: 12px; }
+  .predictive-list { left: 12px; right: 12px; border-radius: 12px; }
+  .input-area { padding: 0 12px 18px; }
+  .input-wrapper { border-radius: 22px; }
+  .chat-input { padding: 14px 16px; font-size: 15px; }
+  .send-btn { padding: 10px; margin-right: 4px; }
+  .w-title { font-size: 28px; }
+  .w-sub { font-size: 14px; }
+}
+
+@media (max-width: 420px) {
+  .header-controls { flex-direction: column; align-items: stretch; }
+  .settings-btn, .db-status { width: 100%; justify-content: center; }
+  .smart-card { padding: 14px; }
+  .term-title { font-size: 18px; }
+  .details-panel { padding: 12px; }
+}
 
 /* Utilities */
 @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
