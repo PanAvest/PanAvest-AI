@@ -263,6 +263,7 @@ function useTTS() {
       setVoices(v)
       if (!selectedVoiceURI) {
         const best =
+          v.find((x) => x.name.toLowerCase().includes('moira') && x.lang.toLowerCase() === 'en-ie') ||
           v.find((x) => (x.name.includes('Google') || x.name.includes('Natural')) && x.lang.startsWith('en')) ||
           v.find((x) => x.lang.startsWith('en'))
         if (best) setSelectedVoiceURI(best.voiceURI)
@@ -366,7 +367,19 @@ const SettingsDialog = ({
   setApiKey: (k: string) => void
   tts: any
 }) => {
+  const [apiDraft, setApiDraft] = useState('')
+
+  useEffect(() => {
+    if (open) setApiDraft('')
+  }, [open])
+
   if (!open) return null
+  const handleSave = () => {
+    const next = apiDraft.trim()
+    if (next) setApiKey(next)
+    setApiDraft('')
+    onClose()
+  }
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -376,10 +389,11 @@ const SettingsDialog = ({
           <label className="modal-label">Gemini API Key (Optional)</label>
           <input
             className="modal-input"
-            placeholder="Paste key to enable Real AI..."
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
+            placeholder={apiKey ? 'Key is set (hidden)' : 'Paste key to enable Real AI...'}
+            value={apiDraft}
+            onChange={(e) => setApiDraft(e.target.value)}
             type="password"
+            autoComplete="off"
           />
           <div className="api-hint">
             Get a free key from{' '}
@@ -409,7 +423,7 @@ const SettingsDialog = ({
         </div>
 
         <div className="modal-actions">
-          <button className="modal-btn primary" onClick={onClose}>
+          <button className="modal-btn primary" onClick={handleSave}>
             Done
           </button>
         </div>
