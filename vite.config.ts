@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiKey = env.GEMINI_API_KEY
+  const model = env.GEMINI_MODEL || 'gemini-1.5-flash-latest'
 
   return {
     plugins: [react()],
@@ -42,7 +43,7 @@ export default defineConfig(({ mode }) => {
               }
 
               const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
                 {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
